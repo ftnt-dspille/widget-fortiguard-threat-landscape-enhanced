@@ -1,0 +1,25 @@
+{
+    "threatLandscapeView": {
+        "APPLY_FILTER": "フィルターを適用",
+        "BTN_OK": "OK",
+        "CLEAR_FILTER": "フィルターをクリア",
+        "COUNTRIES": "国",
+        "DATE_RANGE": "日付範囲",
+        "HEADER_EDIT_FORTIGUARD_THREAT_LANDSCAPE_VIEW": "FortiGuard脅威ランドスケープを編集",
+        "INDUSTRIES": "業界",
+        "INTERVALS": "間隔",
+        "LABEL_NOT_CONFIGURABLE": "このウィジェットはバンドルされており、単独では使用できません",
+        "MALICIOUS_ACTIVITY_DETECTED": "悪意のあるアクティビティを検出",
+        "MSG_DATE_RANGE": "過去{{dateRange}}日間",
+        "SELECT_AN_OPTION": "オプションを選択",
+        "TITLE": "タイトル",
+        "TITLE_AV_MALWARE": "マルウェア配布アクティビティ",
+        "TITLE_C2_BOTNET": "ボットネット活動を検出",
+        "TITLE_IPS_INTRUSION": "侵入防止アクティビティ",
+        "TITLE_IPS_MALICIOUS": "すべての悪意のあるアクティビティ",
+        "TOOLTIP_AV_MALWARE": "検出されたマルウェア配布イベント。",
+        "TOOLTIP_C2_BOTNET": "ボットネット関連のアクティビティおよび通信を検出しました。",
+        "TOOLTIP_IPS_INTRUSION": "IPSによって検出およびブロックされた侵入試行。",
+        "TOOLTIP_IPS_MALICIOUS": "すべてのカテゴリにおける検出された悪意のあるアクティビティの合計。"
+    }
+}

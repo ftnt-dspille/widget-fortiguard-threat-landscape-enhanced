@@ -1,0 +1,127 @@
+<!-- Copyright start
+  Copyright (C) 2008 - 2026 Fortinet Inc.
+  All rights reserved.
+  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+  Copyright end -->
+<div class="threat-landscape-view-container threat-landscape-view-container-height" data-ng-class="{'threat-landscape-view-steel-theme': theme === 'steel', 'threat-landscape-view-dark-theme': theme === 'dark', 'threat-landscape-view-light-theme': theme === 'light', 'threat-landscape-view-blue-theme': theme === 'deepSea'}">
+    <div class="threat-landscape-view-filter-bar landscape-card-details" data-ng-class="{ 'threat-landscape-border-bottom-steel': theme === 'steel', 'threat-landscape-border-bottom-dark': theme === 'dark', 'threat-landscape-border-bottom-light': theme === 'light' }">
+        <div class="display-flex">
+            <!-- Date Range -->
+            <div class="margin-right-md">
+                <label for="selectDateRangeLandscape" class="control-label margin-bottom-0 display-block">{{ 'threatLandscapeView.DATE_RANGE' | translate }}</label>
+                <div class="display-inline-block width-260 padding-top-xs">
+                    <div class="cs-select">
+                        <select id="selectDateRangeLandscape" name="selectDateRangeLandscape"
+                            data-ng-model="filters.dateRange" class="form-control">
+                            <option data-ng-repeat="(key, value) in dateRanges" ng-value="{{ value }}">
+                                {{ key }}
+                            </option>
+                        </select>
+                        <span class="fa fa-sort-desc"></span>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Countries -->
+            <div class="margin-right-md">
+                <label for="selectCountriesLandscape" class="control-label margin-bottom-0 display-block">{{ 'threatLandscapeView.COUNTRIES' | translate }}</label>
+                <div class="display-inline-block width-260 padding-top-xs">
+                    <div class="cs-select">
+                        <select id="selectCountriesLandscape" name="selectCountriesLandscape"
+                            data-ng-model="filters.country" class="form-control">
+                            <option value="">{{ 'threatLandscapeView.SELECT_AN_OPTION' | translate }}</option>
+                            <option data-ng-repeat="country in countryOptions" value="{{ country }}">
+                                {{ country }}
+                            </option>
+                        </select>
+                        <span class="fa fa-sort-desc"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Industries -->
+            <div class="margin-right-md">
+                <label for="selectIndustriesLandscape" class="control-label margin-bottom-0 display-block">{{ 'threatLandscapeView.INDUSTRIES' | translate }}</label>
+                <div class="display-inline-block width-260 padding-top-xs">
+                    <div class="cs-select">
+                        <select id="selectIndustriesLandscape" name="selectIndustriesLandscape"
+                            data-ng-model="filters.industry" class="form-control">
+                            <option value="">{{ 'threatLandscapeView.SELECT_AN_OPTION' | translate }}</option>
+                            <option data-ng-repeat="industry in industryOptions" value="{{ industry }}">
+                                {{ industry }}
+                            </option>
+                        </select>
+                        <span class="fa fa-sort-desc"></span>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Apply Filter -->
+            <div class="margin-right-md margin-top-3">
+                <button class="btn btn-primary btn-sm margin-top-18" ng-click="applyFilters()">
+                    {{ 'threatLandscapeView.APPLY_FILTER' | translate }}
+                </button>
+            </div>
+
+            <!-- Clear Filter -->
+            <div class="margin-right-md margin-top-3" data-ng-if="showClearFilter">
+                <button class="btn btn-default btn-sm clear-all-filter margin-top-18" ng-click="clearFilters()">
+                    <span class="icon icon-close"></span>&nbsp;{{ 'threatLandscapeView.CLEAR_FILTER' | translate }}
+                </button>
+            </div>
+    
+        </div>
+    </div>
+
+    <div class="display-flex-space-between widget-title widget-title-padding">
+        <div class="col-md-12"
+            data-ng-class="(page === 'dashboard' || page === 'reporting') ? 'widget-dashboard-title-width' : 'widget-title-width'">
+            <h5 class="margin-top-md margin-bottom-0 font-1em text-overflow">{{ config.title }}&nbsp;&nbsp;</h5>
+        </div>
+    </div>
+
+    <!-- Threat Landscape Cards -->
+    <div class="threat-landscape-row-container">
+        <div class="threat-landscape-main-title">{{ 'threatLandscapeView.MALICIOUS_ACTIVITY_DETECTED' | translate }}</div>
+        
+        <div class="threat-landscape-cards">
+            <div class="threat-card" ng-repeat="card in trendSummaryConfig.cards" 
+                ng-class="{'main-summary-section': $first, 'metric-item-card': !$first}">
+                
+                <div class="threat-card-header">
+                    <span class="threat-card-title">{{ card.title | translate }}</span>
+                    <span class="margin-top-negative-2" data-uib-tooltip="{{ card.tooltip | translate }}" data-tooltip-append-to-body="true"><i class="icon icon-information"></i></span>
+                </div>
+
+                <cs-spinner data-ng-show="card.loading" class="state-wait" data-show-background="true"></cs-spinner>
+
+                <div ng-if="!card.loading">
+                    <div class="threat-card-value">
+                        <span class="icon" data-ng-if="card.icon">
+                            <img ng-src="{{widgetBasePath}}widgetAssets/images/{{ card.icon }}_icon.png" 
+                                alt="{{ card.icon }}" class="threat-card-icon" />
+                        </span>
+                        <span class="count-text">{{ card.data.Count | numberToDisplay }}</span>
+                    </div>
+                    
+                    <div class="threat-card-trend" ng-class="card.data.trend.direction">
+                        <i data-ng-if="card.data.trend" class="icon" ng-class="{
+                            'icon-trend-up': card.data.trend.direction === 'up',
+                            'icon-trend-down': card.data.trend.direction === 'down'
+                        }"></i>
+                        <span class="percentage-text" data-ng-if="card.data.trend">{{ card.data.trend.percentage }}%</span>
+                        <span class="trend-badge">{{ 'threatLandscapeView.MSG_DATE_RANGE' | translate: { 'dateRange': dateRange} }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kill Chain Phases -->
+    <div>
+        <cs-spinner data-ng-show="widgetProcessing" class="state-wait" data-show-background="true"></cs-spinner>
+        <div data-cs-widget-content ng-if="!widgetProcessing" data-model="model.killchainphases"
+            data-content="widgetDefinition.killchainphases"></div>
+    </div>
+
+</div>

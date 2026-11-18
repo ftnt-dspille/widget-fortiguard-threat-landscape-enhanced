@@ -1,0 +1,25 @@
+{
+    "threatLandscapeView": {
+        "APPLY_FILTER": "필터 적용",
+        "BTN_OK": "확인",
+        "CLEAR_FILTER": "필터 지우기",
+        "COUNTRIES": "국가",
+        "DATE_RANGE": "날짜 범위",
+        "HEADER_EDIT_FORTIGUARD_THREAT_LANDSCAPE_VIEW": "FortiGuard 위협 랜드스케이프 편집",
+        "INDUSTRIES": "산업",
+        "INTERVALS": "간격",
+        "LABEL_NOT_CONFIGURABLE": "이 위젯은 번들로 제공되며 단독으로 사용할 수 없습니다",
+        "MALICIOUS_ACTIVITY_DETECTED": "악성 활동 감지",
+        "MSG_DATE_RANGE": "지난 {{dateRange}}일 동안",
+        "SELECT_AN_OPTION": "옵션 선택",
+        "TITLE": "제목",
+        "TITLE_AV_MALWARE": "멀웨어 배포 활동",
+        "TITLE_C2_BOTNET": "봇넷 활동 감지",
+        "TITLE_IPS_INTRUSION": "침입 방지 활동",
+        "TITLE_IPS_MALICIOUS": "전체 악성 활동",
+        "TOOLTIP_AV_MALWARE": "탐지된 멀웨어 배포 이벤트입니다.",
+        "TOOLTIP_C2_BOTNET": "봇넷 관련 활동 및 통신이 탐지되었습니다.",
+        "TOOLTIP_IPS_INTRUSION": "IPS에 의해 탐지되고 차단된 침입 시도입니다.",
+        "TOOLTIP_IPS_MALICIOUS": "모든 범주에서 탐지된 악성 활동의 총합입니다."
+    }
+}

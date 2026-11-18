@@ -1,0 +1,25 @@
+{
+    "threatLandscapeView": {
+        "APPLY_FILTER": "应用筛选",
+        "BTN_OK": "确定",
+        "CLEAR_FILTER": "清除筛选",
+        "COUNTRIES": "国家",
+        "DATE_RANGE": "日期范围",
+        "HEADER_EDIT_FORTIGUARD_THREAT_LANDSCAPE_VIEW": "编辑 FortiGuard 威胁态势",
+        "INDUSTRIES": "行业",
+        "INTERVALS": "间隔",
+        "LABEL_NOT_CONFIGURABLE": "此小组件为捆绑组件，无法单独使用",
+        "MALICIOUS_ACTIVITY_DETECTED": "检测到恶意活动",
+        "MSG_DATE_RANGE": "过去 {{dateRange}} 天内",
+        "SELECT_AN_OPTION": "选择一个选项",
+        "TITLE": "标题",
+        "TITLE_AV_MALWARE": "恶意软件传播活动",
+        "TITLE_C2_BOTNET": "检测到僵尸网络活动",
+        "TITLE_IPS_INTRUSION": "入侵防御活动",
+        "TITLE_IPS_MALICIOUS": "所有恶意活动",
+        "TOOLTIP_AV_MALWARE": "检测到的恶意软件传播事件。",
+        "TOOLTIP_C2_BOTNET": "检测到与僵尸网络相关的活动和通信。",
+        "TOOLTIP_IPS_INTRUSION": "由 IPS 检测并阻止的入侵尝试。",
+        "TOOLTIP_IPS_MALICIOUS": "所有类别中检测到的恶意活动总数。"
+    }
+}

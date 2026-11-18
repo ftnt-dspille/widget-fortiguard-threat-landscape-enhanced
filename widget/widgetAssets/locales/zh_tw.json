@@ -1,0 +1,25 @@
+{
+    "threatLandscapeView": {
+        "APPLY_FILTER": "套用篩選",
+        "BTN_OK": "確定",
+        "CLEAR_FILTER": "清除篩選",
+        "COUNTRIES": "國家",
+        "DATE_RANGE": "日期範圍",
+        "HEADER_EDIT_FORTIGUARD_THREAT_LANDSCAPE_VIEW": "編輯 FortiGuard 威脅態勢",
+        "INDUSTRIES": "產業",
+        "INTERVALS": "間隔",
+        "LABEL_NOT_CONFIGURABLE": "此小工具為封裝元件，無法單獨使用",
+        "MALICIOUS_ACTIVITY_DETECTED": "偵測到惡意活動",
+        "MSG_DATE_RANGE": "過去 {{dateRange}} 天內",
+        "SELECT_AN_OPTION": "選擇一個選項",
+        "TITLE": "標題",
+        "TITLE_AV_MALWARE": "惡意軟體散布活動",
+        "TITLE_C2_BOTNET": "偵測到殭屍網路活動",
+        "TITLE_IPS_INTRUSION": "入侵防護活動",
+        "TITLE_IPS_MALICIOUS": "所有惡意活動",
+        "TOOLTIP_AV_MALWARE": "偵測到的惡意軟體散布事件。",
+        "TOOLTIP_C2_BOTNET": "偵測到與殭屍網路相關的活動與通訊。",
+        "TOOLTIP_IPS_INTRUSION": "由 IPS 偵測並阻擋的入侵嘗試。",
+        "TOOLTIP_IPS_MALICIOUS": "所有類別中偵測到的惡意活動總數。"
+    }
+}

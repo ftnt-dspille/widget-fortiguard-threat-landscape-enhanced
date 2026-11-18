@@ -1,0 +1,23 @@
+{
+  "name": "fortiGuardThreatLandscape",
+  "title": "FortiGuard Threat Landscape",
+  "subTitle": "Overview of intrusion, malware, and botnet activity",
+  "version": "1.0.2",
+  "published_date": 1770612368,
+  "releaseNotes": "unavailable",
+  "metadata": {
+    "description": "Provides a high-level overview of detected malicious activities across key threat categories.",
+    "pages": [
+      "Dashboard",
+      "Reports",
+      "Listing"
+    ],
+    "certified": "Yes",
+    "publisher": "Fortinet",
+    "compatibility": [
+      "7.6.0"
+    ],
+    "help_online": "https://github.com/fortinet-fortisoar/widget-fortiguard-threat-landscape/blob/release/1.0.0/README.md"
+  },
+  "development": true
+}

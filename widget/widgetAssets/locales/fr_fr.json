@@ -1,0 +1,25 @@
+{
+    "threatLandscapeView": {
+        "APPLY_FILTER": "Appliquer le filtre",
+        "BTN_OK": "OK",
+        "CLEAR_FILTER": "Effacer le filtre",
+        "COUNTRIES": "Pays",
+        "DATE_RANGE": "Plage de dates",
+        "HEADER_EDIT_FORTIGUARD_THREAT_LANDSCAPE_VIEW": "Modifier le paysage des menaces FortiGuard",
+        "INDUSTRIES": "Secteurs",
+        "INTERVALS": "Intervalles",
+        "LABEL_NOT_CONFIGURABLE": "Ce widget est fourni en package et ne peut pas être utilisé séparément",
+        "MALICIOUS_ACTIVITY_DETECTED": "Activité malveillante détectée",
+        "MSG_DATE_RANGE": "Au cours des {{dateRange}} derniers jours",
+        "SELECT_AN_OPTION": "Sélectionner une option",
+        "TITLE": "Titre",
+        "TITLE_AV_MALWARE": "Activité de distribution de logiciels malveillants",
+        "TITLE_C2_BOTNET": "Activité de botnet détectée",
+        "TITLE_IPS_INTRUSION": "Activité de prévention des intrusions",
+        "TITLE_IPS_MALICIOUS": "Toutes les activités malveillantes",
+        "TOOLTIP_AV_MALWARE": "Événements de distribution de logiciels malveillants détectés.",
+        "TOOLTIP_C2_BOTNET": "Activités et communications liées aux botnets détectées.",
+        "TOOLTIP_IPS_INTRUSION": "Tentatives d’intrusion détectées et bloquées par IPS.",
+        "TOOLTIP_IPS_MALICIOUS": "Total des activités malveillantes détectées dans toutes les catégories."
+    }
+}

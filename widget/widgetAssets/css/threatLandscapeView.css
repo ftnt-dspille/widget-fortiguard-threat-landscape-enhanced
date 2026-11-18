@@ -1,0 +1,228 @@
+/* Copyright start
+  Copyright (C) 2008 - 2026 Fortinet Inc.
+  All rights reserved.
+  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+Copyright end */
+
+/* =====================================================
+   UTILITIES
+===================================================== */
+.padding-left-1 { padding-left: 1px; }
+.padding-right-1 { padding-right: 1px; }
+.height-50per { height: 50%; }
+.card-container-height { height: calc(100% - 76px); }
+
+/* =====================================================
+   FILTER BAR - MATCHED TO METRIC CARDS
+===================================================== */
+.threat-landscape-view-filter-bar {
+  top: 0;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  /* Default Dark: Matches .threat-card.metric-item-card background */
+  background: #1c1a1a; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 2px;
+}
+
+/* =====================================================
+   THREAT LANDSCAPE - MAIN CONTAINER
+===================================================== */
+.threat-landscape-row-container {
+  margin: 15px 0px;
+  padding: 20px;
+  border-radius: 8px;
+  background: #1c1a1a; /* Dark Theme Backdrop */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Updated Title: Flush with content */
+.threat-landscape-main-title {
+  font-size: 14px;
+  color: #ffffff;
+  margin-bottom: 5px;
+  padding-left: 0; 
+}
+
+.threat-landscape-cards {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+/* =====================================================
+   THREAT CARD LOGIC
+===================================================== */
+
+/* 1. THE HERO SECTION (All Malicious Detected) */
+.threat-card.main-summary-section {
+  flex: 0 0 15%; 
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0;
+  padding: 20px;
+  position: relative;
+  margin-right: 100px; /* Precise gap after divider */
+}
+
+.threat-card.main-summary-section::after {
+  content: "";
+  position: absolute;
+  right: -20px; 
+  top: 15%;
+  height: 70%;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 2. THE DETAIL CARDS */
+.threat-card.metric-item-card {
+  flex: 0 0 22%; 
+  margin-right: 15px;
+  padding: 15px 18px;
+  border-radius: 8px;
+  background: #1c1a1a; 
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Lifted Look */
+  cursor: default;
+}
+
+.threat-card.metric-item-card:last-child {
+  margin-right: 0;
+}
+
+/* =====================================================
+   THEME ADAPTATIONS
+===================================================== */
+
+/* --- LIGHT THEME --- */
+.threat-landscape-view-light-theme .threat-landscape-row-container {
+  background: #ffffff !important; 
+  border: 1px solid #e2e8f0;
+}
+
+.threat-landscape-view-light-theme .threat-card.metric-item-card {
+  background: #ffffff !important;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.threat-landscape-view-light-theme .threat-landscape-view-filter-bar {
+  background: #f1f1f1 !important;
+}
+
+.threat-landscape-view-blue-theme .threat-landscape-view-filter-bar {
+  background: #0f1526 !important;
+}
+
+.threat-landscape-view-light-theme .threat-landscape-main-title,
+.threat-landscape-view-light-theme .threat-card-value {
+  color: #1e293b; 
+}
+
+.threat-landscape-view-light-theme .threat-card-title {
+  color: #64748b; 
+}
+
+.threat-landscape-view-light-theme .threat-card.main-summary-section::after {
+  background: #e2e8f0; 
+}
+
+.threat-landscape-view-light-theme .trend-badge {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.threat-landscape-view-dark-theme .trend-badge {
+  background: #000;
+}
+
+.threat-landscape-view-steel-theme .trend-badge {
+  background: #0d1218;
+}
+/* --- STEEL THEME --- */
+.threat-landscape-view-steel-theme .threat-landscape-row-container {
+  background: #1b2430; /* Deep Navy Backdrop */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.threat-landscape-view-steel-theme .threat-landscape-view-filter-bar,
+.threat-landscape-view-steel-theme .threat-card.metric-item-card {
+  background: #1b2430 !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Blue THEME --- */
+.threat-landscape-view-blue-theme .threat-landscape-row-container {
+  background: #10162b; /* Deep Navy Backdrop */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.threat-landscape-view-blue-theme .threat-card.metric-item-card {
+  background: #10162b !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* =====================================================
+   CARD CONTENT TYPOGRAPHY
+===================================================== */
+
+.threat-card-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.threat-card-title {
+  font-size: 11px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.threat-card-header i {
+  color: #2cafc3;
+  font-size: 10px;
+}
+
+.threat-card-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+  color: #ffffff;
+}
+
+.threat-card-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* Trend & Badge Styling */
+.threat-card-trend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.threat-card-trend.down { color: #f56565; } 
+.threat-card-trend.up { color: #48bb78; } 
+
+.trend-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  margin-left: 2px;
+}

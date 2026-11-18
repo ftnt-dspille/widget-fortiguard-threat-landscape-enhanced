@@ -1,0 +1,44 @@
+<!-- Copyright start
+  Copyright (C) 2008 - 2026 Fortinet Inc.
+  All rights reserved.
+  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+  Copyright end -->
+<form data-ng-submit="save()" class="noMargin" name="editWidgetForm" data-ng-class="{'state-wait': processing }"
+    novalidate>
+    <div class="modal-header">
+        <h3 class="modal-title col-md-9">{{ 'threatLandscapeView.HEADER_EDIT_FORTIGUARD_THREAT_LANDSCAPE_VIEW' | translate }}</h3>
+        <button type="button" class="close" data-ng-click="cancel()" data-dismiss="modal" aria-label="Close"
+            id="close-edit-widget-form-btn">
+            <div aria-hidden="true" class="version-button">+</div>
+        </button>
+    </div>
+    <div class="modal-body padding-0">
+        <div class="col-md-12 form-group" data-ng-class="{ 'has-error': editWidgetForm.title.$invalid && editWidgetForm.title.$touched }">
+            <label for="title" class="control-label">{{ 'threatLandscapeView.TITLE' | translate }}<span
+                    class="text-danger">*</span>
+            </label>
+            <input id="title" name="title" type="text" class="form-control" data-ng-model="config.title" required>
+            <div data-cs-messages="editWidgetForm.title"></div>
+        </div>
+        <div class="col-md-12 margin-bottom-sm margin-top-md">
+            <label for="selectIntervals" class="control-label margin-bottom-0 display-block">{{ 'threatLandscapeView.INTERVALS' | translate }}</label>
+            <div class="display-inline-block width-260">
+                <div class="cs-select">
+                    <select id="selectIntervals" name="selectIntervals"
+                        data-ng-model="config.time_windows" class="form-control">
+                        <option data-ng-repeat="(key, value) in intervalOptions" ng-value="value">
+                            {{ key }}
+                        </option>
+                    </select>
+                    <span class="fa fa-sort-desc"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="edit-widget-save" type="submit" class="btn btn-sm btn-primary"><i
+                class="icon icon-check margin-right-sm"></i>{{ 'APP.BUTTON.SAVE' | translate }}</button>
+        <button id="edit-widget-cancel" type="button" class="btn btn-sm btn-default" data-ng-click="cancel()"><i
+                class="icon icon-close margin-right-sm"></i>{{ 'APP.LABEL.CLOSE' | translate }}</button>
+    </div>
+</form>
