@@ -7,11 +7,11 @@ Copyright end */
 (function () {
     angular
         .module('cybersponse')
-        .controller('editFortiGuardThreatLandscape102DevCtrl', editFortiGuardThreatLandscape102DevCtrl);
+        .controller('editFortiGuardThreatLandscape103DevCtrl', editFortiGuardThreatLandscape103DevCtrl);
 
-    editFortiGuardThreatLandscape102DevCtrl.$inject = ['$scope', '$uibModalInstance', 'config'];
+    editFortiGuardThreatLandscape103DevCtrl.$inject = ['$scope', '$uibModalInstance', 'config'];
 
-    function editFortiGuardThreatLandscape102DevCtrl($scope, $uibModalInstance, config) {
+    function editFortiGuardThreatLandscape103DevCtrl($scope, $uibModalInstance, config) {
         $scope.cancel = cancel;
         $scope.save = save;
         // An array, not an object: ng-options sorts object keys alphabetically,

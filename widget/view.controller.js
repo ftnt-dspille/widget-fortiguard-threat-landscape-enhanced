@@ -24,11 +24,11 @@ Copyright end */
 (function () {
   angular
     .module('cybersponse')
-    .controller('fortiGuardThreatLandscape102DevCtrl', fortiGuardThreatLandscape102DevCtrl);
+    .controller('fortiGuardThreatLandscape103DevCtrl', fortiGuardThreatLandscape103DevCtrl);
 
-  fortiGuardThreatLandscape102DevCtrl.$inject = ['$scope', '$rootScope', '$http', '$q', 'threatLandscapeViewService', 'config', 'widgetBasePath'];
+  fortiGuardThreatLandscape103DevCtrl.$inject = ['$scope', '$rootScope', '$http', '$q', 'threatLandscapeViewService', 'config', 'widgetBasePath'];
 
-  function fortiGuardThreatLandscape102DevCtrl($scope, $rootScope, $http, $q, threatLandscapeViewService, config, widgetBasePath) {
+  function fortiGuardThreatLandscape103DevCtrl($scope, $rootScope, $http, $q, threatLandscapeViewService, config, widgetBasePath) {
 
     /* ================= CONSTANTS ================= */
 
