@@ -203,7 +203,9 @@ Copyright end */
   display: flex;
   gap: 12px;
   margin: 12px 0;
-  align-items: stretch;
+  /* Content-height panels: stretching the threats panel to the kill chain's
+     height left a large dead zone under its five rows. */
+  align-items: flex-start;
 }
 
 .tlv-grid > .tlv-panel { flex: 3 1 0; min-width: 0; }
