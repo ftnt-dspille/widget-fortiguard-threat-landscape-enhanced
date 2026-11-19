@@ -25,14 +25,30 @@
             <div class="display-inline-block width-260">
                 <div class="cs-select">
                     <select id="selectIntervals" name="selectIntervals"
-                        data-ng-model="config.time_windows" class="form-control">
-                        <option data-ng-repeat="(key, value) in intervalOptions" ng-value="value">
-                            {{ key }}
-                        </option>
+                        data-ng-model="config.time_windows" class="form-control"
+                        data-ng-options="r.value as r.label for r in intervalOptions">
                     </select>
                     <span class="fa fa-sort-desc"></span>
                 </div>
             </div>
+        </div>
+        <div class="col-md-12 margin-bottom-sm">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="demoMode" name="demoMode"
+                        data-ng-model="config.demoMode">
+                    Demo mode (simulated data, no connector needed)
+                </label>
+            </div>
+            <p class="help-block">Renders the whole landscape with plausible simulated numbers for demos and walkthroughs.
+                With this off, the widget uses the live FortiGuard threat-intelligence feed only.</p>
+        </div>
+        <div class="col-md-12 margin-bottom-sm" data-ng-if="config.demoMode">
+            <label class="control-label" for="demoIntensity">Demo activity level</label>
+            <input type="number" class="form-control" id="demoIntensity" name="demoIntensity"
+                data-ng-model="config.demoIntensity" min="10" max="200">
+            <p class="help-block">Scales the simulated counts (10&ndash;200; default 50 keeps them near real-world
+                magnitudes).</p>
         </div>
     </div>
     <div class="modal-footer">

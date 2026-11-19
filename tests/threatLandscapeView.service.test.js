@@ -1,7 +1,9 @@
 "use strict";
 // Failure handling for the Landscape connector calls: a missing connector, a
 // connector with no default configuration and a failed request must each reach
-// the analyst as a toast (and a readable error), never only the console.
+// the analyst as a toast (and a readable error), never only the console. The
+// metadata lookup is cached: N calls make ONE lookup, and a failed lookup is
+// retried by the next call.
 //
 //   make test-unit WIDGET=fortiGuardThreatLandscape
 
@@ -15,7 +17,7 @@ require("../widget/widgetAssets/js/threatLandscapeView.service.js");
 const ngModule = window.angular.mock.module; // eslint-disable-line no-undef
 const ngInject = window.angular.mock.inject; // eslint-disable-line no-undef
 
-let lookup;
+let resourceGets; // the $resource("...connectors/?name=...") metadata GETs
 let toasts;
 let runAction;
 
@@ -23,22 +25,23 @@ beforeEach(() => {
   jest.spyOn(console, "error").mockImplementation(() => {});
   toasts = [];
   runAction = jest.fn();
+  resourceGets = jest.fn();
   ngModule("cybersponse", ($provide) => {
     $provide.value("API", { INTEGRATIONS: "/api/integration/" });
     $provide.value("toaster", { error: (t) => toasts.push(t.body) });
     $provide.value("connectorService", { executeConnectorAction: (...a) => runAction(...a) });
-    $provide.value("$resource", () => ({ get: () => ({ $promise: lookup() }) }));
+    $provide.value("$resource", () => ({ get: () => ({ $promise: resourceGets() }) }));
   });
 });
 afterEach(() => jest.restoreAllMocks());
 
 function run(setLookup, cb) {
   ngInject(["threatLandscapeViewService", "$rootScope", "$q", (svc, $rs, $q) => {
-    lookup = () => setLookup($q);
+    resourceGets.mockImplementation(() => setLookup($q));
     let err = null;
-    svc.executeAction("fortinet-fortiguard-threat-intelligence", "act", { a: 1 }).catch((e) => { err = e; });
+    svc.execute("act", { a: 1 }).catch((e) => { err = e; });
     $rs.$digest();
-    cb(err);
+    cb(err, svc, $rs);
   }]);
 }
 
@@ -72,9 +75,51 @@ test("default configuration -> runs the action with its id and does not toast", 
 });
 
 test("request failure -> toasted once with the platform's reason", () => {
-  run(($q) => $q.reject({ data: { message: "timeout" } }), (err) => {
+  run(($q) => {
+    runAction.mockReturnValue($q.reject({ data: { message: "timeout" } }));
+    return $q.resolve({ data: [{ version: "4.2.0", configuration: [{ config_id: "c7", default: true }] }] });
+  }, (err) => {
     expect(err).toBeTruthy();
     expect(toasts).toHaveLength(1);
     expect(toasts[0]).toMatch(/request failed: timeout/);
   });
+});
+
+test("two calls -> one metadata lookup (cached), both run", () => {
+  run(($q) => {
+    runAction.mockReturnValue($q.resolve({ data: [] }));
+    return $q.resolve({ data: [{ version: "4.2.0", configuration: [{ config_id: "c7", default: true }] }] });
+  }, (err, svc, $rs) => {
+    expect(err).toBeNull();
+    svc.execute("a", {}).catch(() => {});
+    svc.execute("b", {}).catch(() => {});
+    $rs.$digest(); // the cached meta resolves the two calls on the next digest
+  });
+  // the resource GET ran for the first call only; the second call reused the cache
+  expect(resourceGets).toHaveBeenCalledTimes(1);
+  expect(runAction).toHaveBeenCalledTimes(3); // 1 from run() + 2 here
+});
+
+test("a failed metadata lookup is retried by the next call", () => {
+  let fail = true;
+  run(($q) => (fail ? $q.resolve({ data: [] }) : $q.resolve({
+    data: [{ version: "4.2.0", configuration: [{ config_id: "c7", default: true }] }],
+  })), (err, svc) => {
+    expect(err).toMatchObject({ message: expect.stringMatching(/not installed/) });
+    fail = false;
+    let secondErr = null;
+    svc.execute("a", {}).catch((e) => { secondErr = e; });
+    return secondErr;
+  });
+  expect(resourceGets).toHaveBeenCalledTimes(2);
+});
+
+test("stats() and logtime() read the feed envelope", () => {
+  ngInject(["threatLandscapeViewService", (svc) => {
+    const res = { data: [{ Logtime: "2026-11-19 00:44", Stats: [{ Count: 5, Name: "x" }] }] };
+    expect(svc.stats(res)).toEqual([{ Count: 5, Name: "x" }]);
+    expect(svc.logtime(res)).toBe("2026-11-19 00:44");
+    expect(svc.stats({})).toEqual([]);
+    expect(svc.logtime({ data: [{}] })).toBeNull();
+  }]);
 });

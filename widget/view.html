@@ -12,16 +12,14 @@
                 <div class="display-inline-block width-260 padding-top-xs">
                     <div class="cs-select">
                         <select id="selectDateRangeLandscape" name="selectDateRangeLandscape"
-                            data-ng-model="filters.dateRange" class="form-control">
-                            <option data-ng-repeat="(key, value) in dateRanges" ng-value="{{ value }}">
-                                {{ key }}
-                            </option>
+                            data-ng-model="filters.dateRange" class="form-control"
+                            data-ng-options="r.value as r.label for r in dateRanges">
                         </select>
                         <span class="fa fa-sort-desc"></span>
                     </div>
                 </div>
             </div>
-    
+
             <!-- Countries -->
             <div class="margin-right-md">
                 <label for="selectCountriesLandscape" class="control-label margin-bottom-0 display-block">{{ 'threatLandscapeView.COUNTRIES' | translate }}</label>
@@ -55,7 +53,7 @@
                     </div>
                 </div>
             </div>
-    
+
             <!-- Apply Filter -->
             <div class="margin-right-md margin-top-3">
                 <button class="btn btn-primary btn-sm margin-top-18" ng-click="applyFilters()">
@@ -69,7 +67,11 @@
                     <span class="icon icon-close"></span>&nbsp;{{ 'threatLandscapeView.CLEAR_FILTER' | translate }}
                 </button>
             </div>
-    
+
+            <span class="tlv-asof" data-ng-if="asOf" title="Timestamp of the FortiGuard feed data">
+                <span class="fa fa-clock-o"></span>&nbsp;{{ 'threatLandscapeView.MSG_AS_OF' | translate }} {{asOf}} UTC
+            </span>
+            <span class="tlv-demo-chip" data-ng-if="demoMode">{{ 'threatLandscapeView.DEMO_DATA' | translate }}</span>
         </div>
     </div>
 
@@ -80,48 +82,234 @@
         </div>
     </div>
 
-    <!-- Threat Landscape Cards -->
-    <div class="threat-landscape-row-container">
-        <div class="threat-landscape-main-title">{{ 'threatLandscapeView.MALICIOUS_ACTIVITY_DETECTED' | translate }}</div>
-        
-        <div class="threat-landscape-cards">
-            <div class="threat-card" ng-repeat="card in trendSummaryConfig.cards" 
-                ng-class="{'main-summary-section': $first, 'metric-item-card': !$first}">
-                
-                <div class="threat-card-header">
-                    <span class="threat-card-title">{{ card.title | translate }}</span>
-                    <span class="margin-top-negative-2" data-uib-tooltip="{{ card.tooltip | translate }}" data-tooltip-append-to-body="true"><i class="icon icon-information"></i></span>
-                </div>
+    <!-- The connector itself is unusable: one overlay with the reason and a retry -->
+    <div class="tlv-overlay" data-ng-if="loadError" role="alert" data-testid="tlv-load-error">
+        <div class="tlv-overlay-box">
+            <div class="tlv-overlay-title"><i class="fa fa-exclamation-triangle text-danger" aria-hidden="true"></i>&nbsp;{{ 'threatLandscapeView.MSG_LOAD_FAILED' | translate }}</div>
+            <div class="tlv-overlay-reason">{{loadError}}</div>
+            <button type="button" class="btn btn-default btn-sm tlv-retry" data-ng-click="retry()">{{ 'threatLandscapeView.MSG_RETRY' | translate }}</button>
+        </div>
+    </div>
 
-                <cs-spinner data-ng-show="card.loading" class="state-wait" data-show-background="true"></cs-spinner>
+    <div data-ng-if="!loadError">
+        <!-- Threat Landscape Cards -->
+        <div class="threat-landscape-row-container">
+            <div class="threat-landscape-main-title">{{ 'threatLandscapeView.MALICIOUS_ACTIVITY_DETECTED' | translate }}</div>
 
-                <div ng-if="!card.loading">
-                    <div class="threat-card-value">
-                        <span class="icon" data-ng-if="card.icon">
-                            <img ng-src="{{widgetBasePath}}widgetAssets/images/{{ card.icon }}_icon.png" 
-                                alt="{{ card.icon }}" class="threat-card-icon" />
-                        </span>
-                        <span class="count-text">{{ card.data.Count | numberToDisplay }}</span>
+            <div class="threat-landscape-cards">
+                <div class="threat-card" data-ng-repeat="card in cards track by card.key" data-testid="tlv-card"
+                    ng-class="{'main-summary-section': $first, 'metric-item-card': !$first}">
+
+                    <div class="threat-card-header">
+                        <span class="threat-card-title">{{ card.title | translate }}</span>
+                        <span class="margin-top-negative-2" data-uib-tooltip="{{ card.tooltip | translate }}" data-tooltip-append-to-body="true"><i class="icon icon-information"></i></span>
                     </div>
-                    
-                    <div class="threat-card-trend" ng-class="card.data.trend.direction">
-                        <i data-ng-if="card.data.trend" class="icon" ng-class="{
-                            'icon-trend-up': card.data.trend.direction === 'up',
-                            'icon-trend-down': card.data.trend.direction === 'down'
-                        }"></i>
-                        <span class="percentage-text" data-ng-if="card.data.trend">{{ card.data.trend.percentage }}%</span>
-                        <span class="trend-badge">{{ 'threatLandscapeView.MSG_DATE_RANGE' | translate: { 'dateRange': dateRange} }}</span>
+
+                    <cs-spinner data-ng-show="card.loading" class="state-wait" data-show-background="true"></cs-spinner>
+
+                    <div ng-if="!card.loading">
+                        <div class="tlv-card-error" data-ng-if="card.error" data-testid="tlv-card-error">{{ 'threatLandscapeView.MSG_SECTION_FAILED' | translate }}</div>
+                        <div ng-if="!card.error">
+                            <div class="threat-card-value">
+                                <span class="icon" data-ng-if="card.icon">
+                                    <img ng-src="{{widgetBasePath}}widgetAssets/images/{{ card.icon }}_icon.png"
+                                        alt="{{ card.icon }}" class="threat-card-icon" />
+                                </span>
+                                <span class="icon" data-ng-if="!card.icon"><i class="fa fa-desktop tlv-card-glyph"></i></span>
+                                <span class="count-text" data-testid="tlv-card-count" title="{{ card.data.count | number }}">{{ abbreviate(card.data.count) }}</span>
+                            </div>
+
+                            <div class="threat-card-trend" ng-class="card.data.trend.direction" data-ng-if="card.data.trend">
+                                <i class="icon" ng-class="{
+                                    'icon-trend-up': card.data.trend.direction === 'up',
+                                    'icon-trend-down': card.data.trend.direction === 'down'
+                                }"></i>
+                                <span class="percentage-text">{{ card.data.trend.percentage }}%</span>
+                                <span class="trend-badge">{{ 'threatLandscapeView.MSG_DATE_RANGE' | translate: { 'dateRange': dateRange} }}</span>
+                            </div>
+                            <div class="threat-card-trend" data-ng-if="!card.data.trend">
+                                <span class="trend-badge">{{ 'threatLandscapeView.MSG_DATE_RANGE' | translate: { 'dateRange': dateRange} }}</span>
+                            </div>
+
+                            <div class="tlv-spark" data-ng-if="card.data.spark" title="Daily rate over the 21, 14, 7, 3 and 1 day windows">
+                                <svg viewBox="-4 -4 118 38" preserveAspectRatio="none">
+                                    <polygon class="tlv-spark-area" data-ng-attr-points="{{card.data.spark.area}}"></polygon>
+                                    <polyline class="tlv-spark-line" data-ng-attr-points="{{card.data.spark.line}}"></polyline>
+                                    <circle class="tlv-spark-dot" r="3" data-ng-attr-cx="{{card.data.spark.last[0]}}" data-ng-attr-cy="{{card.data.spark.last[1]}}"></circle>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Kill Chain and Top Threats -->
+        <div class="tlv-grid">
+            <div class="tlv-panel">
+                <div class="tlv-panel-title">{{ 'threatLandscapeView.KC_TITLE' | translate }}</div>
+                <cs-spinner data-ng-show="killChain.loading" class="state-wait"></cs-spinner>
+                <div class="tlv-panel-error" data-ng-if="!killChain.loading && killChain.error" data-testid="tlv-killchain-error">{{ 'threatLandscapeView.MSG_SECTION_FAILED' | translate }}</div>
+                <div class="tlv-kc" data-ng-if="!killChain.loading && !killChain.error">
+                    <div class="tlv-kc-phase" data-ng-repeat="section in killChainSections track by section.id" data-testid="tlv-kc-phase">
+                        <div class="tlv-kc-head">
+                            <span class="tlv-kc-title">{{ 'threatLandscapeView.PHASE_' + section.id | translate }}</span>
+                            <span class="tlv-kc-total" ng-class="{'tlv-muted': !section.totalCount}">{{ section.totalCount ? abbreviate(section.totalCount) : '-' }}</span>
+                        </div>
+                        <div class="tlv-kc-progress"><i data-ng-style="{width: section.progressPercent + '%'}"></i></div>
+                        <div class="tlv-kc-metric" data-ng-repeat="m in section.metrics track by $index" data-testid="tlv-kc-metric">
+                            <span class="tlv-kc-cat" title="{{m.label}}">{{m.label}}</span>
+                            <span class="tlv-kc-type">{{ m.type === 'ips' ? 'IPS' : 'AV' }}</span>
+                            <div class="tlv-kc-bar"><i data-ng-style="{width: m.pct + '%'}" ng-class="m.type === 'ips' ? 'tlv-bar-ips' : 'tlv-bar-av'"></i></div>
+                            <span class="tlv-kc-count">{{abbreviate(m.count)}}</span>
+                        </div>
+                        <div class="tlv-kc-quiet" data-ng-if="!section.metrics.length">{{ 'threatLandscapeView.KC_QUIET' | translate }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tlv-panel">
+                <div class="tlv-threat-cols">
+                    <div class="tlv-threat-col" data-ng-repeat="col in [topThreats.exploit, topThreats.malware] track by col.kind">
+                        <div class="tlv-panel-title">{{ col.title | translate }}</div>
+                        <cs-spinner data-ng-show="col.loading" class="state-wait"></cs-spinner>
+                        <div class="tlv-panel-error" data-ng-if="!col.loading && col.error" data-testid="tlv-threats-error">{{ 'threatLandscapeView.MSG_SECTION_FAILED' | translate }}</div>
+                        <div class="tlv-empty tlv-muted" data-ng-if="!col.loading && !col.error && !col.items.length">{{ 'threatLandscapeView.MSG_NO_DATA' | translate }}</div>
+                        <div class="tlv-rows" data-ng-if="!col.loading && !col.error">
+                            <button type="button" class="tlv-row" data-ng-repeat="item in col.items track by item.title"
+                                data-ng-click="openThreat(item, col)" data-testid="tlv-threat-row" title="{{item.title}}">
+                                <span class="tlv-rank">{{item.rank}}</span>
+                                <span class="tlv-row-body">
+                                    <span class="tlv-row-title">{{item.title}}</span>
+                                    <span class="tlv-bar"><i data-ng-style="{width: item.pct + '%'}"></i></span>
+                                </span>
+                                <span class="tlv-row-value" title="{{item.value | number}}">{{abbreviate(item.value)}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top targeted countries and industries -->
+        <div class="tlv-grid tlv-grid-lists">
+            <div class="tlv-panel" data-ng-if="!topCountries.hidden">
+                <div class="tlv-panel-title">{{ 'threatLandscapeView.TOP_COUNTRIES' | translate }}<span class="tlv-panel-hint" data-ng-if="filters.industry">&nbsp;&middot;&nbsp;{{filters.industry}}</span></div>
+                <cs-spinner data-ng-show="topCountries.loading" class="state-wait"></cs-spinner>
+                <div class="tlv-panel-error" data-ng-if="!topCountries.loading && topCountries.error" data-testid="tlv-countries-error">{{ 'threatLandscapeView.MSG_SECTION_FAILED' | translate }}</div>
+                <div class="tlv-empty tlv-muted" data-ng-if="!topCountries.loading && !topCountries.error && !topCountries.items.length">{{ 'threatLandscapeView.MSG_NO_DATA' | translate }}</div>
+                <div class="tlv-rows" data-ng-if="!topCountries.loading && !topCountries.error">
+                    <button type="button" class="tlv-row" data-ng-repeat="item in topCountries.items track by item.code"
+                        data-ng-click="pickCountry(item)" data-testid="tlv-country-row" title="{{ 'threatLandscapeView.FILTER_TO' | translate: {name: item.title} }}">
+                        <span class="tlv-rank">{{item.rank}}</span>
+                        <span class="tlv-row-body">
+                            <span class="tlv-row-title">{{item.title}}</span>
+                            <span class="tlv-bar"><i data-ng-style="{width: item.pct + '%'}"></i></span>
+                        </span>
+                        <span class="tlv-row-value" title="{{item.value | number}}">{{abbreviate(item.value)}}</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tlv-panel" data-ng-if="!topIndustries.hidden">
+                <div class="tlv-panel-title">{{ 'threatLandscapeView.TOP_INDUSTRIES' | translate }}<span class="tlv-panel-hint" data-ng-if="filters.country">&nbsp;&middot;&nbsp;{{filters.country}}</span></div>
+                <cs-spinner data-ng-show="topIndustries.loading" class="state-wait"></cs-spinner>
+                <div class="tlv-panel-error" data-ng-if="!topIndustries.loading && topIndustries.error" data-testid="tlv-industries-error">{{ 'threatLandscapeView.MSG_SECTION_FAILED' | translate }}</div>
+                <div class="tlv-empty tlv-muted" data-ng-if="!topIndustries.loading && !topIndustries.error && !topIndustries.items.length">{{ 'threatLandscapeView.MSG_NO_DATA' | translate }}</div>
+                <div class="tlv-rows" data-ng-if="!topIndustries.loading && !topIndustries.error">
+                    <div class="tlv-row tlv-row-plain" data-ng-repeat="item in topIndustries.items track by item.title" data-testid="tlv-industry-row">
+                        <span class="tlv-rank">{{item.rank}}</span>
+                        <span class="tlv-row-body">
+                            <span class="tlv-row-title" title="{{item.title}}">{{item.title}}</span>
+                            <span class="tlv-bar"><i data-ng-style="{width: item.pct + '%'}"></i></span>
+                        </span>
+                        <span class="tlv-row-value" title="{{item.value | number}}">{{abbreviate(item.value)}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Latest outbreak alerts -->
+        <div class="tlv-outbreaks" data-testid="tlv-outbreaks">
+            <div class="tlv-panel-title">{{ 'threatLandscapeView.OUTBREAKS_TITLE' | translate }}</div>
+            <cs-spinner data-ng-show="outbreaks.loading" class="state-wait"></cs-spinner>
+            <div class="tlv-panel-error" data-ng-if="!outbreaks.loading && outbreaks.error">{{ 'threatLandscapeView.MSG_SECTION_FAILED' | translate }}</div>
+            <div class="tlv-empty tlv-muted" data-ng-if="!outbreaks.loading && !outbreaks.error && !outbreaks.items.length">{{ 'threatLandscapeView.MSG_NO_DATA' | translate }}</div>
+            <div class="tlv-outbreak-items" data-ng-if="!outbreaks.loading && !outbreaks.error">
+                <a class="tlv-outbreak" data-ng-repeat="o in outbreaks.items track by o.name"
+                    data-ng-href="{{o.url}}" data-ng-if="o.url" target="_blank" rel="noopener noreferrer" data-testid="tlv-outbreak-item">
+                    <span class="tlv-outbreak-name">{{o.name}}</span>
+                    <span class="tlv-outbreak-date">{{o.date}}</span>
+                    <span class="tlv-outbreak-sub tlv-muted">{{o.subtitle}}</span>
+                </a>
+                <span class="tlv-outbreak" data-ng-repeat="o in outbreaks.items track by o.name" data-ng-if="!o.url" data-testid="tlv-outbreak-item">
+                    <span class="tlv-outbreak-name">{{o.name}}</span>
+                    <span class="tlv-outbreak-date">{{o.date}}</span>
+                    <span class="tlv-outbreak-sub tlv-muted">{{o.subtitle}}</span>
+                </span>
+            </div>
+        </div>
     </div>
 
-    <!-- Kill Chain Phases -->
-    <div>
-        <cs-spinner data-ng-show="widgetProcessing" class="state-wait" data-show-background="true"></cs-spinner>
-        <div data-cs-widget-content ng-if="!widgetProcessing" data-model="model.killchainphases"
-            data-content="widgetDefinition.killchainphases"></div>
+    <!-- Threat drill-down -->
+    <div class="tlv-drawer-backdrop" data-ng-if="drill" data-ng-click="closeThreat()"></div>
+    <div class="tlv-drawer" data-ng-if="drill" data-testid="tlv-drawer">
+        <div class="tlv-drawer-head">
+            <div>
+                <div class="tlv-muted">{{ drill.colTitle | translate }} &middot; {{ drill.category | translate }}</div>
+                <div class="tlv-drawer-title" data-testid="tlv-drawer-title">{{drill.item.title}}</div>
+            </div>
+            <button type="button" class="close" data-ng-click="closeThreat()" aria-label="Close">&times;</button>
+        </div>
+        <div class="tlv-muted">{{ 'threatLandscapeView.DRILL_SCOPE' | translate: {scope: drill.scope, window: drill.window} }}</div>
+        <cs-spinner data-ng-show="drill.loading" class="state-wait"></cs-spinner>
+        <div class="tlv-panel-error" data-ng-if="!drill.loading && drill.error" data-testid="tlv-drawer-error">{{ drill.error | translate }}</div>
+        <div data-ng-if="!drill.loading && !drill.error">
+            <div class="tlv-demo-note tlv-muted" data-ng-if="drill.demo">{{ 'threatLandscapeView.DEMO_DATA' | translate }}</div>
+            <div data-ng-if="drill.lookup">
+                <div class="tlv-drawer-stats">
+                    <div data-ng-if="drill.lookup.risk">
+                        <div class="tlv-muted">{{ 'threatLandscapeView.DRILL_RISK' | translate }}</div>
+                        <strong class="tlv-risk" data-ng-class="'tlv-risk-' + drill.lookup.risk" data-testid="tlv-drawer-risk">{{drill.lookup.risk}}</strong>
+                    </div>
+                    <div>
+                        <div class="tlv-muted">{{ 'threatLandscapeView.DRILL_EVENTS' | translate }}</div>
+                        <strong data-testid="tlv-drawer-events">{{abbreviate(drill.item.value)}}</strong>
+                    </div>
+                    <div data-ng-if="drill.lookup.epss">
+                        <div class="tlv-muted">EPSS</div>
+                        <strong>{{drill.lookup.epss}}</strong>
+                    </div>
+                    <div data-ng-if="drill.lookup.kev">
+                        <div class="tlv-muted">{{ 'threatLandscapeView.DRILL_KEV' | translate }}</div>
+                        <strong class="text-danger">{{drill.lookup.kev}}</strong>
+                    </div>
+                </div>
+                <div class="tlv-drawer-section" data-ng-if="drill.lookup.summary">
+                    <div class="tlv-card-title">{{ 'threatLandscapeView.DRILL_SUMMARY' | translate }}</div>
+                    <p class="tlv-drawer-text">{{drill.lookup.summary}}</p>
+                </div>
+                <div class="tlv-drawer-section" data-ng-if="drill.lookup.analysis">
+                    <div class="tlv-card-title">{{ 'threatLandscapeView.DRILL_ANALYSIS' | translate }}</div>
+                    <p class="tlv-drawer-text">{{drill.lookup.analysis}}</p>
+                </div>
+                <div class="tlv-drawer-section" data-ng-if="drill.lookup.action">
+                    <div class="tlv-card-title">{{ 'threatLandscapeView.DRILL_ACTION' | translate }}</div>
+                    <p class="tlv-drawer-text">{{drill.lookup.action}}</p>
+                </div>
+                <div class="tlv-drawer-section" data-ng-if="drill.lookup.cves.length">
+                    <div class="tlv-card-title">{{ 'threatLandscapeView.DRILL_CVES' | translate }}</div>
+                    <span class="tlv-chip" data-ng-repeat="cve in drill.lookup.cves track by cve">{{cve}}</span>
+                </div>
+                <div class="tlv-drawer-section" data-ng-if="drill.lookup.platforms.length">
+                    <div class="tlv-card-title">{{ 'threatLandscapeView.DRILL_PLATFORMS' | translate }}</div>
+                    <span class="tlv-chip" data-ng-repeat="p in drill.lookup.platforms track by p">{{p}}</span>
+                </div>
+            </div>
+            <a class="btn btn-primary btn-sm tlv-drawer-link" data-ng-href="{{drill.url}}" target="_blank" rel="noopener noreferrer" data-testid="tlv-drawer-link">
+                <span class="fa fa-external-link"></span>&nbsp;{{ 'threatLandscapeView.DRILL_OPEN' | translate }}
+            </a>
+        </div>
     </div>
 
 </div>

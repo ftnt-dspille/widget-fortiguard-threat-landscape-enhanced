@@ -26,3 +26,37 @@ describe("translations survive a late-loading locale file", () => {
     expect(read("view.controller.js")).not.toMatch(/instantTranslate\(/);
   });
 });
+
+describe("locale files keep key parity", () => {
+  const LOCALES = ["en", "fr_fr", "ja", "ko", "zh_cn", "zh_tw"];
+  const readLocale = (code) =>
+    JSON.parse(fs.readFileSync(path.join(WIDGET, "widgetAssets/locales", code + ".json"), "utf8")).threatLandscapeView;
+
+  test.each(LOCALES.slice(1))("%s has exactly the keys en has, all filled in", (code) => {
+    const en = readLocale("en");
+    const other = readLocale(code);
+    expect(Object.keys(other).sort()).toEqual(Object.keys(en).sort());
+    for (const key of Object.keys(en)) {
+      expect(typeof other[key]).toBe("string");
+      expect(other[key]).not.toBe("");
+    }
+  });
+
+  test("every key the templates and controller reference exists in en", () => {
+    const en = readLocale("en");
+    const refs = new Set();
+    // Keys start uppercase, so the widget's threatLandscapeView.css path is
+    // not mistaken for a translation key.
+    const re = /threatLandscapeView\.([A-Z][A-Za-z0-9_]*)/g;
+    for (const file of ["view.html", "edit.html", "view.controller.js"]) {
+      let m;
+      while ((m = re.exec(read(file)))) { refs.add(m[1]); }
+    }
+    // A trailing underscore is a dynamic prefix (`'threatLandscapeView.PHASE_' + id`):
+    // it is complete when some en key starts with it.
+    const missing = [...refs].filter((k) =>
+      k.endsWith("_") ? !Object.keys(en).some((key) => key.startsWith(k)) : !(k in en));
+    expect(missing).toEqual([]);
+    expect(refs.size).toBeGreaterThan(20); // the check itself is not vacuous
+  });
+});

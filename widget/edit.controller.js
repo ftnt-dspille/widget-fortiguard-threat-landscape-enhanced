@@ -2,7 +2,7 @@
   Copyright (C) 2008 - 2026 Fortinet Inc.
   All rights reserved.
   FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
-  Copyright end */
+Copyright end */
 'use strict';
 (function () {
     angular
@@ -14,19 +14,25 @@
     function editFortiGuardThreatLandscape102DevCtrl($scope, $uibModalInstance, config) {
         $scope.cancel = cancel;
         $scope.save = save;
-        $scope.intervalOptions = {
-          'Last 1 Day': 1,
-          'Last 3 Days': 3,
-          'Last 7 Days': 7,
-          'Last 14 Days': 14,
-          'Last 21 Days': 21
-        };
+        // An array, not an object: ng-options sorts object keys alphabetically,
+        // which would order the dropdown 1, 14, 21, 3, 7.
+        $scope.intervalOptions = [
+            { label: 'Last 1 Day', value: 1 },
+            { label: 'Last 3 Days', value: 3 },
+            { label: 'Last 7 Days', value: 7 },
+            { label: 'Last 14 Days', value: 14 },
+            { label: 'Last 21 Days', value: 21 }
+        ];
         let defaultConfig = {
-          time_windows: 14
+            time_windows: 14,
+            demoMode: false,
+            demoIntensity: 50
         };
 
         $scope.config = config;
         $scope.config.time_windows = $scope.config.time_windows || defaultConfig.time_windows;
+        if ($scope.config.demoMode === undefined) { $scope.config.demoMode = defaultConfig.demoMode; }
+        if (!$scope.config.demoIntensity) { $scope.config.demoIntensity = defaultConfig.demoIntensity; }
 
         function cancel() {
             $uibModalInstance.dismiss('cancel');

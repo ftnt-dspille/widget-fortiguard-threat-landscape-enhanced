@@ -12,6 +12,8 @@ Copyright end */
 .height-50per { height: 50%; }
 .card-container-height { height: calc(100% - 76px); }
 
+.tlv-muted { color: #8a94a6; font-weight: normal; }
+
 /* =====================================================
    FILTER BAR - MATCHED TO METRIC CARDS
 ===================================================== */
@@ -22,10 +24,32 @@ Copyright end */
   border-radius: 4px;
   margin-bottom: 15px;
   /* Default Dark: Matches .threat-card.metric-item-card background */
-  background: #1c1a1a; 
+  background: #1c1a1a;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   margin-top: 2px;
+}
+
+/* Feed freshness stamp and demo marker, right end of the filter bar */
+.tlv-asof {
+  margin-left: auto;
+  align-self: center;
+  font-size: 11px;
+  color: #8a94a6;
+  white-space: nowrap;
+}
+
+.tlv-demo-chip {
+  align-self: center;
+  margin-left: 10px;
+  padding: 2px 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #f6ad55;
+  border: 1px solid rgba(246, 173, 85, 0.4);
+  border-radius: 10px;
+  white-space: nowrap;
 }
 
 /* =====================================================
@@ -44,7 +68,7 @@ Copyright end */
   font-size: 14px;
   color: #ffffff;
   margin-bottom: 5px;
-  padding-left: 0; 
+  padding-left: 0;
 }
 
 .threat-landscape-cards {
@@ -54,24 +78,24 @@ Copyright end */
 }
 
 /* =====================================================
-   THREAT CARD LOGIC
+   THREAT CARD LOGIC (hero + four detail cards)
 ===================================================== */
 
-/* 1. THE HERO SECTION (All Malicious Detected) */
+/* 1. THE HERO SECTION (All Malicious Activity) */
 .threat-card.main-summary-section {
-  flex: 0 0 15%; 
+  flex: 0 0 16%;
   background: transparent !important;
   border: none !important;
   border-radius: 0;
   padding: 20px;
   position: relative;
-  margin-right: 100px; /* Precise gap after divider */
+  margin-right: 70px; /* Precise gap after divider */
 }
 
 .threat-card.main-summary-section::after {
   content: "";
   position: absolute;
-  right: -20px; 
+  right: -20px;
   top: 15%;
   height: 70%;
   width: 1px;
@@ -80,11 +104,12 @@ Copyright end */
 
 /* 2. THE DETAIL CARDS */
 .threat-card.metric-item-card {
-  flex: 0 0 22%; 
-  margin-right: 15px;
-  padding: 15px 18px;
+  flex: 1 1 0;
+  min-width: 0;
+  margin-right: 12px;
+  padding: 15px 16px;
   border-radius: 8px;
-  background: #1c1a1a; 
+  background: #1c1a1a;
   border: 1px solid rgba(255, 255, 255, 0.03);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Lifted Look */
   cursor: default;
@@ -94,13 +119,444 @@ Copyright end */
   margin-right: 0;
 }
 
+/* A card whose call failed says so instead of showing a blank number */
+.tlv-card-error {
+  font-size: 11px;
+  color: #f56565;
+  padding: 12px 0;
+}
+
+.tlv-card-glyph {
+  font-size: 22px;
+  color: #2cafc3;
+  line-height: 24px;
+}
+
+/* =====================================================
+   SPARKLINES (daily rate across the five windows)
+===================================================== */
+.tlv-spark {
+  margin-top: 10px;
+  width: 110px;
+  height: 30px;
+}
+
+.tlv-spark svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.tlv-spark-line {
+  fill: none;
+  stroke: #2cafc3;
+  stroke-width: 1.6;
+}
+
+.tlv-spark-area {
+  fill: rgba(44, 175, 195, 0.14);
+  stroke: none;
+}
+
+.tlv-spark-dot {
+  fill: #2cafc3;
+}
+
+/* =====================================================
+   LOAD FAILURE OVERLAY
+===================================================== */
+.tlv-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  padding: 30px;
+}
+
+.tlv-overlay-box {
+  max-width: 520px;
+  text-align: center;
+  padding: 24px 28px;
+  border-radius: 8px;
+  background: #1c1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tlv-overlay-title {
+  font-size: 14px;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.tlv-overlay-reason {
+  font-size: 12px;
+  color: #8a94a6;
+  margin-bottom: 14px;
+  word-break: break-word;
+}
+
+/* =====================================================
+   PANELS (kill chain, top threats, lists, outbreaks)
+===================================================== */
+.tlv-grid {
+  display: flex;
+  gap: 12px;
+  margin: 12px 0;
+  align-items: stretch;
+}
+
+.tlv-grid > .tlv-panel { flex: 3 1 0; min-width: 0; }
+.tlv-grid > .tlv-panel:last-child { flex: 2 1 0; }
+
+.tlv-grid-lists > .tlv-panel { flex: 1 1 0; }
+
+.tlv-panel {
+  padding: 16px;
+  border-radius: 8px;
+  background: #1c1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tlv-panel-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #a0aec0;
+  margin-bottom: 10px;
+}
+
+.tlv-panel-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  color: #8a94a6;
+}
+
+.tlv-panel-error,
+.tlv-empty {
+  font-size: 12px;
+  padding: 10px 0;
+}
+
+.tlv-panel-error { color: #f56565; }
+
+/* =====================================================
+   KILL CHAIN (self-drawn, with the feed's categories)
+===================================================== */
+.tlv-kc-phase {
+  padding: 8px 0 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tlv-kc-phase:last-child { border-bottom: none; }
+
+.tlv-kc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.tlv-kc-title {
+  font-size: 12px;
+  color: #ffffff;
+}
+
+.tlv-kc-total {
+  font-size: 12px;
+  color: #2cafc3;
+  font-variant-numeric: tabular-nums;
+}
+
+.tlv-kc-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.tlv-kc-progress i {
+  display: block;
+  height: 100%;
+  min-width: 1px;
+  border-radius: 2px;
+  background: #2cafc3;
+}
+
+.tlv-kc-metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0 2px 12px;
+  font-size: 11px;
+}
+
+.tlv-kc-cat {
+  flex: 0 0 34%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #c9d1e0;
+}
+
+.tlv-kc-type {
+  flex: 0 0 22px;
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #8a94a6;
+}
+
+.tlv-kc-bar {
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.tlv-kc-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.tlv-bar-ips { background: #2cafc3; }
+.tlv-bar-av { background: #b794f4; }
+
+.tlv-kc-count {
+  flex: 0 0 52px;
+  text-align: right;
+  color: #8a94a6;
+  font-variant-numeric: tabular-nums;
+}
+
+.tlv-kc-quiet {
+  padding: 2px 0 2px 12px;
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* =====================================================
+   RANKED ROWS (top threats, countries, industries)
+===================================================== */
+.tlv-threat-cols {
+  display: flex;
+  gap: 14px;
+}
+
+.tlv-threat-col { flex: 1 1 0; min-width: 0; }
+
+.tlv-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.tlv-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 4px;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font-size: 12px;
+}
+
+button.tlv-row { cursor: pointer; }
+
+button.tlv-row:hover {
+  background: rgba(44, 175, 195, 0.08);
+}
+
+.tlv-row-plain { cursor: default; }
+
+.tlv-rank {
+  flex: 0 0 18px;
+  font-size: 10px;
+  color: #8a94a6;
+  font-variant-numeric: tabular-nums;
+}
+
+.tlv-row-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tlv-row-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e2e8f0;
+}
+
+.tlv-bar {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.tlv-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: #2cafc3;
+}
+
+.tlv-row-value {
+  flex: 0 0 52px;
+  text-align: right;
+  color: #2cafc3;
+  font-variant-numeric: tabular-nums;
+}
+
+/* =====================================================
+   OUTBREAK ALERTS
+===================================================== */
+.tlv-outbreaks {
+  margin: 12px 0 4px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #1c1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tlv-outbreak-items {
+  display: flex;
+  gap: 12px;
+}
+
+.tlv-outbreak {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+}
+
+a.tlv-outbreak:hover { border-color: rgba(44, 175, 195, 0.4); }
+
+.tlv-outbreak-name {
+  font-size: 12px;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tlv-outbreak-date {
+  font-size: 10px;
+  color: #8a94a6;
+}
+
+.tlv-outbreak-sub {
+  font-size: 11px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* =====================================================
+   ENCYCLOPEDIA DRILL-DOWN
+===================================================== */
+.tlv-drawer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+}
+
+.tlv-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 90vw;
+  padding: 20px;
+  background: #17151a;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  z-index: 1051;
+}
+
+.tlv-drawer-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.tlv-drawer-title {
+  font-size: 15px;
+  color: #ffffff;
+  word-break: break-word;
+}
+
+.tlv-drawer-stats {
+  display: flex;
+  gap: 18px;
+  margin: 14px 0;
+}
+
+.tlv-drawer-stats > div { font-size: 13px; }
+
+.tlv-risk { text-transform: capitalize; }
+.tlv-risk-info { color: #8a94a6; }
+.tlv-risk-low { color: #48bb78; }
+.tlv-risk-medium { color: #ecc94b; }
+.tlv-risk-high { color: #f6ad55; }
+.tlv-risk-critical { color: #f56565; }
+
+.tlv-drawer-section { margin-bottom: 14px; }
+
+.tlv-drawer-text {
+  font-size: 12px;
+  color: #c9d1e0;
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.tlv-chip {
+  display: inline-block;
+  margin: 2px 6px 2px 0;
+  padding: 2px 8px;
+  font-size: 10px;
+  border-radius: 10px;
+  background: rgba(44, 175, 195, 0.12);
+  color: #2cafc3;
+}
+
+.tlv-demo-note { font-size: 11px; font-style: italic; margin-bottom: 8px; }
+
+.tlv-drawer-link { margin-top: 6px; }
+
 /* =====================================================
    THEME ADAPTATIONS
 ===================================================== */
 
 /* --- LIGHT THEME --- */
 .threat-landscape-view-light-theme .threat-landscape-row-container {
-  background: #ffffff !important; 
+  background: #ffffff !important;
   border: 1px solid #e2e8f0;
 }
 
@@ -114,21 +570,49 @@ Copyright end */
   background: #f1f1f1 !important;
 }
 
-.threat-landscape-view-blue-theme .threat-landscape-view-filter-bar {
-  background: #0f1526 !important;
+.threat-landscape-view-light-theme .tlv-panel,
+.threat-landscape-view-light-theme .tlv-outbreaks,
+.threat-landscape-view-light-theme .tlv-overlay-box,
+.threat-landscape-view-light-theme .tlv-drawer {
+  background: #ffffff;
+  border-color: #e2e8f0;
 }
 
 .threat-landscape-view-light-theme .threat-landscape-main-title,
-.threat-landscape-view-light-theme .threat-card-value {
-  color: #1e293b; 
+.threat-landscape-view-light-theme .threat-card-value,
+.threat-landscape-view-light-theme .tlv-kc-title,
+.threat-landscape-view-light-theme .tlv-outbreak-name,
+.threat-landscape-view-light-theme .tlv-drawer-title,
+.threat-landscape-view-light-theme .tlv-overlay-title {
+  color: #1e293b;
 }
 
-.threat-landscape-view-light-theme .threat-card-title {
-  color: #64748b; 
+.threat-landscape-view-light-theme .tlv-muted,
+.threat-landscape-view-light-theme .tlv-kc-count,
+.threat-landscape-view-light-theme .tlv-kc-type,
+.threat-landscape-view-light-theme .tlv-rank,
+.threat-landscape-view-light-theme .tlv-outbreak-date {
+  color: #64748b;
 }
+
+.threat-landscape-view-light-theme .threat-card-title,
+.threat-landscape-view-light-theme .tlv-panel-title {
+  color: #64748b;
+}
+
+.threat-landscape-view-light-theme .tlv-row-title { color: #1e293b; }
+.threat-landscape-view-light-theme .tlv-kc-cat { color: #334155; }
+
+.threat-landscape-view-light-theme .tlv-kc-phase,
+.threat-landscape-view-light-theme .tlv-row,
+.threat-landscape-view-light-theme .tlv-outbreak { border-color: #e2e8f0; }
+
+.threat-landscape-view-light-theme .tlv-kc-progress,
+.threat-landscape-view-light-theme .tlv-kc-bar,
+.threat-landscape-view-light-theme .tlv-bar { background: #edf2f7; }
 
 .threat-landscape-view-light-theme .threat-card.main-summary-section::after {
-  background: #e2e8f0; 
+  background: #e2e8f0;
 }
 
 .threat-landscape-view-light-theme .trend-badge {
@@ -136,13 +620,13 @@ Copyright end */
   color: #475569;
 }
 
-.threat-landscape-view-dark-theme .trend-badge {
-  background: #000;
+.threat-landscape-view-light-theme .tlv-demo-chip {
+  color: #b7791f;
+  border-color: rgba(183, 121, 31, 0.4);
 }
 
-.threat-landscape-view-steel-theme .trend-badge {
-  background: #0d1218;
-}
+.threat-landscape-view-light-theme .tlv-card-glyph { color: #2b8fa3; }
+
 /* --- STEEL THEME --- */
 .threat-landscape-view-steel-theme .threat-landscape-row-container {
   background: #1b2430; /* Deep Navy Backdrop */
@@ -156,6 +640,17 @@ Copyright end */
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
+.threat-landscape-view-steel-theme .tlv-panel,
+.threat-landscape-view-steel-theme .tlv-outbreaks,
+.threat-landscape-view-steel-theme .tlv-overlay-box,
+.threat-landscape-view-steel-theme .tlv-drawer {
+  background: #1b2430;
+}
+
+.threat-landscape-view-steel-theme .trend-badge {
+  background: #0d1218;
+}
+
 /* --- Blue THEME --- */
 .threat-landscape-view-blue-theme .threat-landscape-row-container {
   background: #10162b; /* Deep Navy Backdrop */
@@ -166,6 +661,13 @@ Copyright end */
   background: #10162b !important;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.threat-landscape-view-blue-theme .tlv-panel,
+.threat-landscape-view-blue-theme .tlv-outbreaks,
+.threat-landscape-view-blue-theme .tlv-overlay-box,
+.threat-landscape-view-blue-theme .tlv-drawer {
+  background: #10162b;
 }
 
 /* =====================================================
@@ -196,7 +698,7 @@ Copyright end */
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 28px;
+  font-size: 26px;
   color: #ffffff;
 }
 
@@ -215,8 +717,8 @@ Copyright end */
   font-size: 12px;
 }
 
-.threat-card-trend.down { color: #f56565; } 
-.threat-card-trend.up { color: #48bb78; } 
+.threat-card-trend.down { color: #f56565; }
+.threat-card-trend.up { color: #48bb78; }
 
 .trend-badge {
   display: inline-block;
@@ -225,4 +727,15 @@ Copyright end */
   background: rgba(0, 0, 0, 0.4);
   border-radius: 3px;
   margin-left: 2px;
+}
+
+/* =====================================================
+   SMALL DASHBOARDS: let the card row wrap
+===================================================== */
+@media (max-width: 900px) {
+  .threat-landscape-cards { flex-wrap: wrap; }
+  .threat-card.main-summary-section { flex: 1 1 100%; margin-right: 0; }
+  .threat-card.main-summary-section::after { display: none; }
+  .threat-card.metric-item-card { flex: 1 1 45%; margin-bottom: 10px; }
+  .tlv-grid, .tlv-threat-cols, .tlv-outbreak-items { flex-direction: column; }
 }
